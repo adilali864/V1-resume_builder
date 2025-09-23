@@ -5,13 +5,12 @@ const PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
 
 export async function POST(request: NextRequest) {
   try {
-    const { file, filename, apiKey } = await request.json()
+    const { fileContent, filename, apiKey } = await request.json()
 
-    if (!file || !apiKey) {
-      return NextResponse.json({ error: "File and API key are required" }, { status: 400 })
+    if (!fileContent || !apiKey) {
+      return NextResponse.json({ error: "File content and API key are required" }, { status: 400 })
     }
 
-    // Create the prompt for Perplexity API
     const prompt = `
 You are a resume data extraction expert. Extract all relevant information from the uploaded resume and return it in the exact JSON format specified below. Be thorough and extract all available information.
 
@@ -71,11 +70,13 @@ Instructions:
 - For experience: break down responsibilities into bullet points
 - For languages: if proficiency levels aren't specified, estimate based on context or use "B2" as default
 - For medical skills: extract any healthcare, nursing, or medical-related skills mentioned
-- Generate unique IDs for each array item
+- Generate unique IDs for each array item using format: edu-1, exp-1, lang-1, etc.
 - If information is missing, use empty strings or empty arrays
 - Return ONLY the JSON object, no additional text
 
-Resume content to extract from: ${filename}
+Resume content to extract from (filename: ${filename}):
+
+${fileContent}
 `
 
     const response = await fetch(PERPLEXITY_API_URL, {
@@ -98,7 +99,9 @@ Resume content to extract from: ${filename}
     })
 
     if (!response.ok) {
-      throw new Error(`Perplexity API error: ${response.statusText}`)
+      const errorText = await response.text()
+      console.error("Perplexity API error:", errorText)
+      throw new Error(`Perplexity API error: ${response.status} ${response.statusText}`)
     }
 
     const data = await response.json()
@@ -123,6 +126,7 @@ Resume content to extract from: ${filename}
       resumeData = validateAndCleanResumeData(resumeData)
     } catch (parseError) {
       console.error("JSON parsing error:", parseError)
+      console.error("Raw response:", extractedText)
       // Return a default structure if parsing fails
       resumeData = getDefaultResumeData()
     }
@@ -130,7 +134,12 @@ Resume content to extract from: ${filename}
     return NextResponse.json({ resumeData })
   } catch (error) {
     console.error("Resume extraction error:", error)
-    return NextResponse.json({ error: "Failed to extract resume data" }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Failed to extract resume data",
+      },
+      { status: 500 },
+    )
   }
 }
 
@@ -149,7 +158,7 @@ function validateAndCleanResumeData(data: any): ResumeData {
     },
     education: Array.isArray(data.education)
       ? data.education.map((edu: any, index: number) => ({
-          id: edu.id || `edu-${index}`,
+          id: edu.id || `edu-${index + 1}`,
           startYear: edu.startYear || "",
           endYear: edu.endYear || "",
           location: edu.location || "",
@@ -159,7 +168,7 @@ function validateAndCleanResumeData(data: any): ResumeData {
       : [],
     experience: Array.isArray(data.experience)
       ? data.experience.map((exp: any, index: number) => ({
-          id: exp.id || `exp-${index}`,
+          id: exp.id || `exp-${index + 1}`,
           startDate: exp.startDate || "",
           endDate: exp.endDate || "",
           location: exp.location || "",
@@ -172,7 +181,7 @@ function validateAndCleanResumeData(data: any): ResumeData {
     motherTongue: data.motherTongue || "",
     languages: Array.isArray(data.languages)
       ? data.languages.map((lang: any, index: number) => ({
-          id: lang.id || `lang-${index}`,
+          id: lang.id || `lang-${index + 1}`,
           language: lang.language || "",
           reading: lang.reading || "B2",
           speaking: lang.speaking || "B2",
