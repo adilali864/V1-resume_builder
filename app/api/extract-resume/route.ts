@@ -5,10 +5,12 @@ const PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
 
 export async function POST(request: NextRequest) {
   try {
-    const { fileContent, filename, apiKey } = await request.json()
+    const { fileContent, filename } = await request.json()
+
+    const apiKey = process.env.PERPLEXITY_API_KEY
 
     if (!fileContent || !apiKey) {
-      return NextResponse.json({ error: "File content and API key are required" }, { status: 400 })
+      return NextResponse.json({ error: "File content is required and API key must be configured" }, { status: 400 })
     }
 
     const prompt = `
