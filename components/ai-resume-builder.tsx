@@ -18,8 +18,6 @@ import { Upload, FileText, Loader2, CheckCircle, AlertCircle } from "lucide-reac
 import { Alert, AlertDescription } from "./ui/alert"
 import type { ResumeData } from "@/types/resume"
 
-const PERPLEXITY_API_KEY = "YOUR_API_KEY_HERE"
-
 const EDIT_STEPS = [
   { id: 1, title: "Personal Info" },
   { id: 2, title: "Education" },
@@ -64,8 +62,10 @@ export function AIResumeBuilder() {
     setError(null)
 
     try {
-      // Convert file to base64 for API
-      const base64 = await fileToBase64(file)
+      console.log("[v0] Starting file extraction for:", file.name)
+
+      const fileContent = await extractTextFromFile(file)
+      console.log("[v0] Extracted text length:", fileContent.length)
 
       const response = await fetch("/api/extract-resume", {
         method: "POST",
@@ -73,35 +73,63 @@ export function AIResumeBuilder() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          file: base64,
+          fileContent, // Send fileContent instead of file
           filename: file.name,
-          apiKey: PERPLEXITY_API_KEY,
         }),
       })
 
+      console.log("[v0] API response status:", response.status)
+
       if (!response.ok) {
-        throw new Error("Failed to extract resume data")
+        const errorData = await response.json()
+        console.error("[v0] API error:", errorData)
+        throw new Error(errorData.error || "Failed to extract resume data")
       }
 
       const data = await response.json()
+      console.log("[v0] Extracted data:", data)
+
       setExtractedData(data.resumeData)
       setResumeData(data.resumeData)
       setStep("extracted")
     } catch (err) {
+      console.error("[v0] Extraction error:", err)
       setError(err instanceof Error ? err.message : "Failed to extract resume data")
       setStep("upload")
     }
   }
 
-  const fileToBase64 = (file: File): Promise<string> => {
+  const extractTextFromFile = async (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
-      reader.readAsDataURL(file)
+
+      if (file.type === "application/pdf") {
+        // For PDFs, we'll read as text for now (basic extraction)
+        // In production, you'd want to use a proper PDF parser like pdf-parse
+        reader.readAsText(file)
+      } else {
+        // For DOC/DOCX files, read as text
+        reader.readAsText(file)
+      }
+
       reader.onload = () => {
         const result = reader.result as string
-        resolve(result.split(",")[1]) // Remove data:type;base64, prefix
+        if (result.length < 50) {
+          // If text extraction failed, try reading as binary and convert
+          const binaryReader = new FileReader()
+          binaryReader.readAsArrayBuffer(file)
+          binaryReader.onload = () => {
+            // For now, return filename as fallback
+            resolve(
+              `Resume file: ${file.name}\nPlease note: This is a ${file.type} file that may require specialized parsing.`,
+            )
+          }
+          binaryReader.onerror = () => reject(new Error("Failed to read file"))
+        } else {
+          resolve(result)
+        }
       }
-      reader.onerror = (error) => reject(error)
+      reader.onerror = () => reject(new Error("Failed to read file"))
     })
   }
 

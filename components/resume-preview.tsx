@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card } from "@/components/ui/card" 
 import { Download, Edit, Loader2 } from "lucide-react"
 import type { ResumeData } from "@/hooks/use-resume-data"
 import { usePDFGenerator } from "@/hooks/use-pdf-generator"
@@ -65,8 +65,8 @@ export function ResumePreview({ data, onEdit }: ResumePreviewProps) {
       </div>
 
       {/* Resume Preview */}
-      <Card className="max-w-4xl mx-auto">
-        <div id="resume-content" className="europass-resume">
+      <Card className="max-w-4xl mx-auto shadow-lg">
+        <div id="resume-content" className="europass-resume font-sans">
           <EuropassResumeTemplate data={data} />
         </div>
       </Card>
@@ -76,60 +76,84 @@ export function ResumePreview({ data, onEdit }: ResumePreviewProps) {
 
 function EuropassResumeTemplate({ data }: { data: ResumeData }) {
   return (
-    <div className="flex min-h-[29.7cm] bg-white">
-      {/* Left Sidebar - Blue */}
-      <div className="w-[35%] bg-blue-600 text-white p-8">
-        {/* Profile Section */}
+    <div className="flex min-h-[842px] bg-white font-sans text-black relative">
+      {/* Europass Logo - Top Right */}
+      <div className="absolute top-4 right-6 flex items-center space-x-2 z-10">
+        <div className="flex items-center space-x-1">
+          <div className="w-6 h-6 bg-[#003776] rounded-sm flex items-center justify-center">
+            <div className="w-4 h-4 bg-[#FFD617] rounded-sm flex items-center justify-center">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+          </div>
+          <span className="text-[#7B2D8E] font-bold text-lg tracking-wide">europass</span>
+        </div>
+      </div>
+
+      {/* Left Sidebar - 30% width */}
+      <div className="w-[30%] bg-white p-8 border-r-0">
+        {/* Profile Photo */}
         <div className="text-center mb-8">
           {data.personalInfo.profilePhoto && (
-            <img
-              src={data.personalInfo.profilePhoto || "/placeholder.svg"}
-              alt="Profile"
-              className="w-32 h-32 rounded-full border-4 border-white mb-6 mx-auto object-cover"
-            />
+            <div className="relative mb-6 mx-auto w-32 h-32">
+              <img
+                src={data.personalInfo.profilePhoto || "/placeholder.svg"}
+                alt="Profile"
+                className="w-32 h-32 rounded-full border-2 border-gray-300 mx-auto object-cover"
+              />
+            </div>
           )}
-          <h1 className="text-2xl font-bold uppercase leading-tight">
+          
+          {/* Name */}
+          <h1 className="text-2xl font-bold text-black leading-tight mb-4">
             {data.personalInfo.firstName} {data.personalInfo.lastName}
           </h1>
         </div>
 
         {/* Contact Information */}
-        <div className="space-y-4">
-          {data.personalInfo.nationality && <ContactItem label="Nationality" value={data.personalInfo.nationality} />}
-          {data.personalInfo.phone && <ContactItem label="Phone number" value={data.personalInfo.phone} />}
-          {data.personalInfo.email && <ContactItem label="Email address" value={data.personalInfo.email} />}
-          {data.personalInfo.linkedin && <ContactItem label="LinkedIn" value={data.personalInfo.linkedin} />}
-          {data.personalInfo.address && <ContactItem label="Address" value={data.personalInfo.address} />}
+        <div className="space-y-4 mb-8">
+          {data.personalInfo.nationality && (
+            <ContactItem label="Nationality" value={data.personalInfo.nationality} />
+          )}
+          {data.personalInfo.phone && (
+            <ContactItem label="Phone number" value={data.personalInfo.phone} />
+          )}
+          {data.personalInfo.email && (
+            <ContactItem label="Email address" value={data.personalInfo.email} />
+          )}
+          {data.personalInfo.linkedin && (
+            <ContactItem label="LinkedIn" value={data.personalInfo.linkedin} />
+          )}
+          {data.personalInfo.address && (
+            <ContactItem label="Address" value={data.personalInfo.address} />
+          )}
         </div>
       </div>
 
-      {/* Right Main Content */}
-      <div className="w-[65%] p-8 relative">
-        {/* Europass Logo Placeholder */}
-        <div className="absolute top-4 right-6 w-32 h-8 bg-blue-100 rounded flex items-center justify-center text-xs text-blue-600 font-semibold">
-          EUROPASS
-        </div>
-
-        <div className="space-y-8 mt-8">
+      {/* Right Main Content - 70% width */}
+      <div className="w-[70%] p-8 pt-16">
+        <div className="space-y-8">
           {/* About Me Section */}
           {data.personalInfo.aboutMe && (
             <ResumeSection title="ABOUT ME">
-              <p className="text-sm leading-relaxed text-justify">{data.personalInfo.aboutMe}</p>
+              <p className="text-sm leading-relaxed text-justify text-black">
+                {data.personalInfo.aboutMe}
+              </p>
             </ResumeSection>
           )}
 
           {/* Education Section */}
           {data.education.length > 0 && (
             <ResumeSection title="EDUCATION AND TRAINING">
-              <div className="space-y-6">
+              <div className="space-y-6 relative">
+                <div className="absolute left-[6px] top-0 bottom-0 w-[2px] bg-[#003776]"></div>
                 {data.education.map((edu, index) => (
                   <TimelineItem key={edu.id}>
-                    <div className="font-bold text-blue-600 text-sm">
+                    <div className="font-bold text-[#003776] text-xs mb-1">
                       {edu.startYear} – {edu.endYear}
-                      {edu.location && <span className="text-gray-600"> – {edu.location}</span>}
+                      {edu.location && <span className="font-normal"> – {edu.location}</span>}
                     </div>
-                    <div className="font-semibold text-sm mt-1">{edu.degree}</div>
-                    <div className="text-gray-600 text-sm">{edu.institution}</div>
+                    <div className="font-bold text-black text-sm mb-1">{edu.degree}</div>
+                    <div className="text-black text-sm">{edu.institution}</div>
                   </TimelineItem>
                 ))}
               </div>
@@ -139,19 +163,20 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
           {/* Work Experience Section */}
           {data.experience.length > 0 && (
             <ResumeSection title="WORK EXPERIENCE">
-              <div className="space-y-6">
+              <div className="space-y-6 relative">
+                <div className="absolute left-[6px] top-0 bottom-0 w-[2px] bg-[#003776]"></div>
                 {data.experience.map((exp, index) => (
                   <TimelineItem key={exp.id}>
-                    <div className="font-bold text-blue-600 text-sm">
+                    <div className="font-bold text-[#003776] text-xs mb-1">
                       {formatDate(exp.startDate)} – {exp.currentJob ? "PRESENT" : formatDate(exp.endDate)}
-                      {exp.location && <span className="text-gray-600"> – {exp.location}</span>}
+                      {exp.location && <span className="font-normal"> – {exp.location}</span>}
                     </div>
-                    <div className="font-semibold text-sm mt-1">{exp.position}</div>
-                    {exp.company && <div className="text-gray-600 text-sm">{exp.company}</div>}
+                    <div className="font-bold text-black text-sm mb-1">{exp.position}</div>
+                    {exp.company && <div className="text-black text-sm mb-2">{exp.company}</div>}
                     {exp.responsibilities.length > 0 && (
-                      <ul className="list-disc list-inside text-sm mt-2 space-y-1 ml-4">
+                      <ul className="list-disc ml-6 text-sm space-y-1">
                         {exp.responsibilities.map((resp, idx) => (
-                          <li key={idx}>{resp}</li>
+                          <li key={idx} className="text-black">{resp}</li>
                         ))}
                       </ul>
                     )}
@@ -167,16 +192,35 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
               <div className="space-y-4">
                 {data.motherTongue && (
                   <div>
-                    <div className="font-semibold text-sm">MOTHER TONGUE(S):</div>
-                    <div className="text-sm uppercase font-medium">{data.motherTongue}</div>
+                    <div className="font-bold text-black text-xs tracking-wide mb-1">
+                      MOTHER TONGUE(S):
+                    </div>
+                    <div className="text-xs text-black font-medium tracking-wide uppercase">
+                      {data.motherTongue}
+                    </div>
                   </div>
                 )}
                 {data.languages.map((lang) => (
                   <div key={lang.id}>
-                    <div className="font-semibold text-sm">OTHER LANGUAGE(S):</div>
-                    <div className="text-sm uppercase font-medium">{lang.language}</div>
-                    <div className="text-xs text-gray-600 mt-1">
-                      Reading: {lang.reading} | Speaking: {lang.speaking} | Writing: {lang.writing}
+                    <div className="font-bold text-black text-xs tracking-wide mb-1">
+                      OTHER LANGUAGE(S):
+                    </div>
+                    <div className="text-xs text-black font-medium tracking-wide uppercase mb-2">
+                      {lang.language}
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 text-xs text-black">
+                      <div>
+                        <span className="font-medium">Reading</span>
+                        <div className="mt-1">{lang.reading}</div>
+                      </div>
+                      <div>
+                        <span className="font-medium">Speaking</span>
+                        <div className="mt-1">{lang.speaking}</div>
+                      </div>
+                      <div>
+                        <span className="font-medium">Writing</span>
+                        <div className="mt-1">{lang.writing}</div>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -184,18 +228,11 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
             </ResumeSection>
           )}
 
-          {/* Medical Skills Section */}
+          {/* Digital Skills Section */}
           {data.medicalSkills.length > 0 && (
-            <ResumeSection title="MEDICAL SKILLS">
-              <div className="flex flex-wrap gap-2">
-                {data.medicalSkills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="bg-blue-50 border border-blue-600 text-blue-600 px-3 py-1 rounded text-xs"
-                  >
-                    {skill}
-                  </span>
-                ))}
+            <ResumeSection title="DIGITAL SKILLS">
+              <div className="text-sm text-black">
+                {data.medicalSkills.join("    ")}
               </div>
             </ResumeSection>
           )}
@@ -203,11 +240,11 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
           {/* Hobbies Section */}
           {data.hobbies && (
             <ResumeSection title="HOBBIES AND INTERESTS">
-              <div className="text-sm">
+              <div className="text-sm text-black">
                 {data.hobbies
                   .split(",")
                   .map((h) => h.trim())
-                  .join(" | ")}
+                  .join("    ")}
               </div>
             </ResumeSection>
           )}
@@ -219,17 +256,19 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
 
 function ContactItem({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <div className="font-bold text-sm mb-1">{label}:</div>
-      <div className="text-sm break-words">{value}</div>
+    <div className="text-left">
+      <div className="font-bold text-black text-xs mb-1">{label}:</div>
+      <div className="text-xs text-black break-words leading-relaxed">{value}</div>
     </div>
   )
 }
 
 function ResumeSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div>
-      <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-4">{title}</h2>
+    <div className="mb-8">
+      <h2 className="text-sm font-bold text-black uppercase tracking-wider mb-6 border-b-0">
+        {title}
+      </h2>
       {children}
     </div>
   )
@@ -237,10 +276,9 @@ function ResumeSection({ title, children }: { title: string; children: React.Rea
 
 function TimelineItem({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative pl-6">
-      <div className="absolute left-0 top-1 w-3 h-3 bg-blue-600 rounded-full"></div>
-      <div className="absolute left-1.5 top-4 w-0.5 h-full bg-blue-600"></div>
-      <div className="pb-2">{children}</div>
+    <div className="relative pl-6 pb-4">
+      <div className="absolute left-0 top-1 w-3 h-3 bg-[#003776] rounded-full border-2 border-white shadow-sm"></div>
+      <div>{children}</div>
     </div>
   )
 }

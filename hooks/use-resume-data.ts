@@ -212,6 +212,7 @@ export function useResumeData() {
 
   return {
     resumeData,
+    setResumeData, // Added setResumeData to the return object
     updateResumeData,
     validateStep,
     isLoading,
