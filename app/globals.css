@@ -126,7 +126,7 @@
 
 /* Europass Resume Styles */
 .europass-resume {
-  font-family: Arial, sans-serif;
+  font-family: var(--font-open-sans), Arial, sans-serif;
   width: 21cm;
   min-height: 29.7cm;
   margin: 0 auto;
@@ -165,3 +165,4 @@
     width: 100% !important;
   }
 }
+

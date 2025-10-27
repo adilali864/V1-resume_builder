@@ -1,8 +1,14 @@
 import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
+import { Open_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+
+// import the Open Sans font
+export const openSans = Open_Sans({
+  subsets: ['latin'],
+  variable: '--font-open-sans',
+  weight: ['400', '600', '700'], // similar to Europass
+})
 
 export const metadata: Metadata = {
   title: 'v0 App',
@@ -17,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className={`${openSans.variable} font-sans`}>
         {children}
         <Analytics />
       </body>

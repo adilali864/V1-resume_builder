@@ -132,11 +132,11 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
 
       {/* Right Main Content - 70% width */}
       <div className="w-[70%] p-8 pt-16">
-        <div className="space-y-8">
+        <div className="space-y-2">
         {/* About Me Section */}
         {data.personalInfo.aboutMe && (
           <div className="mb-6">
-            <h2 className="text-sm font-bold text-black uppercase tracking-wider mb-1">
+            <h2 className="text-base font-normal text-black uppercase tracking-wider mb-1">
               ABOUT ME:
             </h2>
             <p className="text-sm text-black leading-relaxed">
@@ -148,11 +148,11 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
           {/* Education Section */}
           {data.education.length > 0 && (
             <ResumeSection title="EDUCATION AND TRAINING">
-              <div className="space-y-6 relative">
-                <div className="absolute left-[6px] top-0 bottom-0 w-[2px] bg-[#003776]"></div>
+              <div className="space-y-1 relative ">
+                <div className="absolute left-[6px] top-0 bottom-0 w-[2px] bg-[#003399]"></div>
                 {data.education.map((edu, index) => (
                   <TimelineItem key={edu.id}>
-                    <div className="font-bold text-[#003776] text-xs mb-1">
+                    <div className="font-extrabold text-[#003399] text-xs mb-1">
                       {edu.startYear} – {edu.endYear}
                       {edu.location && <span className="font-normal"> – {edu.location}</span>}
                     </div>
@@ -166,19 +166,23 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
 
           {/* Work Experience Section */}
           {data.experience.length > 0 && (
-            <ResumeSection title="WORK EXPERIENCE">
-              <div className="space-y-6 relative">
-                <div className="absolute left-[6px] top-0 bottom-0 w-[2px] bg-[#003776]"></div>
+            <ResumeSection title="WORK EXPERIENCE" className="!mb-1">
+
+              <div className="space-y-1 relative">
+                <div className="absolute left-[6px] top-0 bottom-0 w-[2px] bg-[#003399]"></div>
                 {data.experience.map((exp, index) => (
                   <TimelineItem key={exp.id}>
-                    <div className="font-bold text-[#003776] text-xs mb-1">
-                      {formatDate(exp.startDate)} – {exp.currentJob ? "PRESENT" : formatDate(exp.endDate)}
+                    <div className="font-extrabold text-[#003399] text-xs mb-1">
+                      <span style={{ fontWeight: 800 }}>
+                        {formatDate(exp.startDate)} – {exp.currentJob ? "PRESENT" : formatDate(exp.endDate)}
+                      </span>
                       {exp.location && <span className="font-normal"> – {exp.location}</span>}
                     </div>
+
                     <div className="font-bold text-black text-sm mb-1">{exp.position}</div>
                     {exp.company && <div className="text-black text-sm mb-2">{exp.company}</div>}
                     {exp.responsibilities.length > 0 && (
-                      <ul className="list-disc ml-6 text-sm space-y-1">
+                      <ul className="list-disc ml-12 text-sm space-y-1">
                         {exp.responsibilities
                          .flatMap((r) => r.split(/[.]+/)) // split on period for display only
                          .map((resp, idx) =>
@@ -198,12 +202,12 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
 
            {/* Language Skills Section */}
         {(data.motherTongue || data.languages.length > 0) && (
-          <ResumeSection title="LANGUAGE SKILLS" className="ml-10">
+          <ResumeSection title="LANGUAGE SKILLS" className="ml-12">
             <div className="text-black text-xs tracking-wide mt-0 ">
               
               {/* Mother Tongue */}
               {data.motherTongue && (
-                <div className="mb-2">
+                <div className="mb-2 ml-2">
                   <span className="font-bold uppercase">MOTHER TONGUE(S): </span>
                   <span className="font-medium uppercase">{data.motherTongue}</span>
                 </div>
@@ -211,22 +215,22 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
 
               {/* Other Languages */}
               {data.languages.map((lang) => (
-                <div key={lang.id} className="mb-4">
+                <div key={lang.id} className="mb-4 ml-2">
                   <div>
                     <span className="font-bold uppercase">OTHER LANGUAGE(S): </span>
                     <span className="font-medium uppercase">{lang.language}</span>
                   </div>
 
                   <div className="mt-2 space-y-1 ">
-                    <div className="flex justify-between w-20">
+                    <div className="flex justify-between w-24">
                       <span className="font-semibold">Reading</span>
                       <span>{lang.reading}</span>
                     </div>
-                    <div className="flex justify-between w-20">
+                    <div className="flex justify-between w-24">
                       <span className="font-semibold">Speaking</span>
                       <span>{lang.speaking}</span>
                     </div>
-                    <div className="flex justify-between w-20">
+                    <div className="flex justify-between w-24">
                       <span className="font-semibold">Writing</span>
                       <span>{lang.writing}</span>
                     </div>
@@ -239,8 +243,8 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
 
           {/* Digital Skills Section */}
           {data.medicalSkills.length > 0 && (
-            <ResumeSection title="DIGITAL SKILLS" className="ml-10">
-              <div className="text-xs text-black mt-0 flex flex-wrap gap-x-6 gap-y-1">
+            <ResumeSection title="DIGITAL SKILLS" className="ml-12">
+              <div className="text-xs text-black mt-0 ml-2 flex flex-wrap gap-x-6 gap-y-1">
               {data.medicalSkills.map((skill, index) => (
                 <span key={index} className="font-medium">
                   {skill}
@@ -253,8 +257,8 @@ function EuropassResumeTemplate({ data }: { data: ResumeData }) {
 
           {/* Hobbies Section */}
           {data.hobbies && (
-            <ResumeSection title="HOBBIES AND INTERESTS" className="ml-10">
-               <div className="text-xs text-black mt-0 flex flex-wrap gap-x-6 gap-y-1">
+            <ResumeSection title="HOBBIES AND INTERESTS" className="ml-12">
+               <div className="text-xs text-black mt-0 ml-2 flex flex-wrap gap-x-6 gap-y-1">
                 {data.hobbies
                 .split(",")
                 .map((hobby, index) => (
@@ -290,8 +294,8 @@ function ResumeSection({
   className?: string
 }) {
   return (
-    <div className={`mb-8 ${className}`}>
-      <h2 className="text-sm font-bold text-black uppercase tracking-wider mb-2 border-b-0">
+    <div className={`mb-4 ${className}`}>
+      <h2 className="text-base font-normal text-text-black uppercase tracking-wider mb-2 ml-2 border-b-0">
         {title}
       </h2>
       {children}
@@ -302,12 +306,12 @@ function ResumeSection({
 
 function TimelineItem({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative pl-8 pb-6">
+    <div className="relative pl-8 pb-4">
       {/* Blue Line Dot */}
-      <div className="absolute left-0 top-2.5 flex items-center justify-center">
+      <div className="absolute left-0 top-6 flex items-center justify-center">
         <div className="w-3 h-3 bg-[#003776] rounded-full"></div>
       </div>
-      <div className="ml-2">{children}</div>
+      <div className="ml-0.5">{children}</div>
     </div>
   )
 }

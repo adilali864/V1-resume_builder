@@ -32,9 +32,11 @@ export function ExperienceForm({ data, onUpdate }: ExperienceFormProps) {
   }
 
   const updateExperience = (id: string, field: keyof Experience, value: any) => {
-    const updatedExperience = data.experience.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp))
-    onUpdate({ experience: updatedExperience })
-  }
+  const updatedExperience = data.experience.map((exp) =>
+    exp.id === id ? { ...exp, [field]: value } : exp
+  )
+  onUpdate({ experience: [...updatedExperience] })
+}
 
   const removeExperience = (id: string) => {
     const filteredExperience = data.experience.filter((exp) => exp.id !== id)
@@ -46,11 +48,17 @@ export function ExperienceForm({ data, onUpdate }: ExperienceFormProps) {
   }
 
   const handleCurrentJobChange = (id: string, checked: boolean) => {
-    updateExperience(id, "currentJob", checked)
-    if (checked) {
-      updateExperience(id, "endDate", "")
-    }
-  }
+  const updatedExperience = data.experience.map((exp) =>
+    exp.id === id
+      ? {
+          ...exp,
+          currentJob: checked,
+          endDate: checked ? "" : exp.endDate, // clear end date if checked
+        }
+      : exp
+  )
+  onUpdate({ experience: [...updatedExperience] })
+}
 
   return (
     <div className="space-y-6">
@@ -94,8 +102,8 @@ export function ExperienceForm({ data, onUpdate }: ExperienceFormProps) {
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id={`current-${exp.id}`}
-                  checked={exp.currentJob}
-                  onCheckedChange={(checked) => handleCurrentJobChange(exp.id, checked as boolean)}
+                  checked={!!exp.currentJob}
+                  onCheckedChange={(checked) => handleCurrentJobChange(exp.id, checked === true)}
                 />
                 <Label htmlFor={`current-${exp.id}`}>Currently Working</Label>
               </div>
