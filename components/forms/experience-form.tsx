@@ -42,8 +42,7 @@ export function ExperienceForm({ data, onUpdate }: ExperienceFormProps) {
   }
 
   const handleResponsibilitiesChange = (id: string, value: string) => {
-    const responsibilities = value.split("\n").filter((r) => r.trim())
-    updateExperience(id, "responsibilities", responsibilities)
+    updateExperience(id, "responsibilities", value.split("\n"))
   }
 
   const handleCurrentJobChange = (id: string, checked: boolean) => {
@@ -133,7 +132,7 @@ export function ExperienceForm({ data, onUpdate }: ExperienceFormProps) {
                 <Textarea
                   value={exp.responsibilities.join("\n")}
                   onChange={(e) => handleResponsibilitiesChange(exp.id, e.target.value)}
-                  placeholder="Enter each responsibility on a new line"
+                  placeholder="Type your responsibilities. Press Enter or end a sentence with a full stop (.) to start a new line."
                   rows={4}
                 />
               </div>

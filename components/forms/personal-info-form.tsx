@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,7 +16,9 @@ interface PersonalInfoFormProps {
 }
 
 export function PersonalInfoForm({ data, onUpdate }: PersonalInfoFormProps) {
-  const [photoPreview, setPhotoPreview] = useState<string | null>(data.personalInfo.profilePhoto || null)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(
+    data.personalInfo.profilePhoto || null,
+  )
 
   const handleInputChange = (field: string, value: string) => {
     onUpdate({
@@ -56,7 +57,8 @@ export function PersonalInfoForm({ data, onUpdate }: PersonalInfoFormProps) {
       {/* Photo Upload */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Profile Photo</CardTitle>
+          {/* 👇 THIS LINE IS UPDATED */}
+          <CardTitle className="text-lg text-center">Profile Photo</CardTitle>
         </CardHeader>
         <CardContent className="text-center">
           {photoPreview ? (
@@ -87,14 +89,21 @@ export function PersonalInfoForm({ data, onUpdate }: PersonalInfoFormProps) {
               </Label>
             </div>
           )}
-          <input id="photo-upload" type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+          <input
+            id="photo-upload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handlePhotoUpload}
+          />
         </CardContent>
       </Card>
 
       {/* Personal Details */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Personal Details</CardTitle>
+          {/* 👇 THIS LINE IS UPDATED */}
+          <CardTitle className="text-lg text-center">Personal Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
